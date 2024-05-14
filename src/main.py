@@ -5,7 +5,7 @@ from facenet.model import FaceNetModel
 from service.api import FaceComparisonService
 
 # Load the FaceNet model
-model = FaceNetModel()
+model = FaceNetModel("FaceNet512")
 
 # Load the faces from the database
 database_path = os.path.join(os.path.dirname(__file__), 'db/faces')
@@ -26,6 +26,6 @@ def compare_faces(input_photo):
     return result
 
 # Example usage
-input_photo = 'path/to/input/photo.jpg'
+input_photo = 'db/test_faces/test.jpg'
 result = compare_faces(input_photo)
 print(result)
