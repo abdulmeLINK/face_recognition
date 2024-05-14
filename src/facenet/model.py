@@ -1,20 +1,27 @@
 import tensorflow as tf
 import numpy as np
+from facenet_pytorch import InceptionResnetV1
 
 class FaceNetModel:
-    def __init__(self, model_path):
-        self.model_path = model_path
+    def __init__(self, pretrained_model="vggface2"):
+        self.pretrained_model = pretrained_model
         self.model = None
 
     def load_model(self):
-        self.model = tf.keras.models.load_model(self.model_path)
+        self.model = InceptionResnetV1(pretrained=self.pretrained_model).eval()
         self.model.summary()
 
     def preprocess_image(self, image):
-        # Preprocess the image (e.g., resize, normalize, etc.)
-        # Implement your preprocessing logic here
-        preprocessed_image = image
-        return preprocessed_image
+        # Resize the image to the size expected by FaceNet (160x160)
+        image = cv2.resize(image, (160, 160))
+
+        # Convert the image to float32
+        image = image.astype('float32')
+
+        # Normalize the image to the range [0, 1]
+        image /= 255.0
+
+        return image
 
     def compute_embedding(self, image):
         preprocessed_image = self.preprocess_image(image)

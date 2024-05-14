@@ -1,28 +1,20 @@
 import os
 import cv2
-import numpy as np
 from facenet.model import FaceNetModel
-from service.api import FaceComparisonService
+from service.face_comparator import load_embeddings_from_database, calculate_euclidean_distance, compare_to_database
 
 # Load the FaceNet model
-model = FaceNetModel("FaceNet512")
+model = FaceNetModel()
+model.load_model()
 
-# Load the faces from the database
-database_path = os.path.join(os.path.dirname(__file__), 'db/faces')
-database_faces = []
-for filename in os.listdir(database_path):
-    if filename.endswith('.jpg') or filename.endswith('.png'):
-        image_path = os.path.join(database_path, filename)
-        face = cv2.imread(image_path)
-        database_faces.append(face)
+# Load the embeddings from the database
+database_embeddings = load_embeddings_from_database(model)
 
-# Initialize the face comparison service
-service = FaceComparisonService(model, database_faces)  
-
-# Process the input photo and compare it to the faces in the database
+# Process the input photo and compare it to the embeddings in the database
 def compare_faces(input_photo):
     input_face = cv2.imread(input_photo)
-    result = service.compare(input_face)
+    input_embedding = model.compute_embedding(input_face)
+    result = compare_to_database(input_embedding, database_embeddings)
     return result
 
 # Example usage
