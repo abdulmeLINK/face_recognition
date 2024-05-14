@@ -18,6 +18,6 @@ def compare_faces(input_photo):
     return result
 
 # Example usage
-input_photo = 'db/test_faces/test.jpg'
+input_photo = 'db/test_faces/1.jpg'
 result = compare_faces(input_photo)
-print(result)
+print(result[:10])
