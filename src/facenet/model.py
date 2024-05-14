@@ -26,19 +26,20 @@ class FaceNetModel:
 
         return image
 
-    import torch
-
     def compute_embedding(self, image):
         preprocessed_image = self.preprocess_image(image)
 
         # Convert the image to a PyTorch tensor
         preprocessed_image = torch.from_numpy(preprocessed_image)
 
+        # Transpose the image to the format expected by PyTorch
+        preprocessed_image = preprocessed_image.permute(2, 0, 1)
+
         # Add a batch dimension
         preprocessed_image = preprocessed_image.unsqueeze(0)
 
         # Make sure the image is on the same device as the model
-        preprocessed_image = preprocessed_image.to(self.model.device)
+        preprocessed_image = preprocessed_image.to(self.device)
 
         # Compute the embedding
         embedding = self.model(preprocessed_image)
