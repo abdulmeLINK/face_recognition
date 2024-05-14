@@ -20,7 +20,7 @@ def load_embeddings_from_database(model):
             database_embeddings = pickle.load(f)
     else:
         # Otherwise, compute the embeddings
-        database_embeddings = []
+        database_embeddings = {}
 
         # Iterate over the images in the database
         for filename in os.listdir(database_path):
@@ -32,8 +32,8 @@ def load_embeddings_from_database(model):
                 # Preprocess the image and compute its embedding
                 embedding = model.compute_embedding(image)
 
-                # Add the embedding to the list
-                database_embeddings.append(embedding)
+                # Add the embedding to the dictionary
+                database_embeddings[filename] = embedding
 
         # Save the embeddings for future use
         with open(embeddings_path, 'wb') as f:
@@ -45,9 +45,9 @@ def calculate_euclidean_distance(embedding1, embedding2):
     return np.sqrt(np.sum((embedding1 - embedding2) ** 2))
 
 def compare_to_database(embedding, database_embeddings):
-    for db_embedding in database_embeddings:
+    for filename, db_embedding in database_embeddings.items():
         distance = calculate_euclidean_distance(embedding, db_embedding)
         if distance < 0.5:  # This threshold may need to be adjusted based on your specific use case
-            return True
+            return filename
 
-    return False
+    return None
