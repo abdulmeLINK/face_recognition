@@ -14,7 +14,7 @@ if check_gpu_availability():
 # Load the FaceNet model
 model = FaceNetModel()
 model.load_model()
-database_embbeddings = load_embeddings_from_database(model)
+database_embeddings, filenames, database_tree = load_embeddings_from_database(model)
 
 @app.route('/compare', methods=['POST'])
 def compare_faces():
@@ -25,7 +25,7 @@ def compare_faces():
     embedding = model.compute_embedding(photo)
 
     # Compare the embedding to the faces in the database
-    match = compare_to_database(embedding, database_embbeddings)
+    match = compare_to_database(embedding, database_embeddings, filenames, database_tree)
 
     # Return the result as JSON
     return jsonify({'match': match})
