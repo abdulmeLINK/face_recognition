@@ -36,9 +36,11 @@ def load_embeddings_from_database(model):
                 image_path = os.path.join(database_path, filename)
                 image = cv2.imread(image_path)
                 embedding = model.compute_embedding(image)
+                embedding = np.reshape(embedding, (1, -1))  # Reshape the embedding into a 2D array
                 database_embeddings.append(embedding)
                 filenames.append(filename)
 
+        database_embeddings = np.concatenate(database_embeddings, axis=0)  # Concatenate the embeddings into a 2D array
         database_tree = KDTree(database_embeddings)
 
         with open(embeddings_path, 'wb') as f:
