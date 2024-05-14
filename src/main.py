@@ -17,7 +17,7 @@ for filename in os.listdir(database_path):
         database_faces.append(face)
 
 # Initialize the face comparison service
-service = FaceComparisonService(model, database_faces)
+service = FaceComparisonService(model, database_faces)  
 
 # Process the input photo and compare it to the faces in the database
 def compare_faces(input_photo):
