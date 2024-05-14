@@ -44,7 +44,7 @@ def load_embeddings_from_database(model):
 def calculate_euclidean_distance(embedding1, embedding2):
     return np.sqrt(np.sum((embedding1 - embedding2) ** 2))
 
-def compare_to_database(embedding):
+def compare_to_database(embedding, database_embeddings):
     database_embeddings = load_embeddings_from_database()
 
     for db_embedding in database_embeddings:
