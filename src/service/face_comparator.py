@@ -56,7 +56,7 @@ def compare_to_database(embedding, database_embeddings, filenames, database_tree
     min_distance = np.min(distances)
     min_index = np.argmin(distances)
     print(f"minimum distance: {min_distance} -> {distances}")
-    if min_distance < 0.5:  # This threshold may need to be adjusted based on your specific use case
+    if min_distance < 0.68:  # This threshold may need to be adjusted based on your specific use case
         return filenames[indices[min_index][0]]
 
     return None
