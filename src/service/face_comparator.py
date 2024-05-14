@@ -53,8 +53,9 @@ def calculate_euclidean_distance(embedding1, embedding2):
 
 def compare_to_database(embedding, database_embeddings, filenames, database_tree):
     distances, indices = database_tree.query(embedding, k=len(database_embeddings))
-    index = np.argmin(distances)
-    if distances[index] < 0.5:  # This threshold may need to be adjusted based on your specific use case
-        return filenames[indices[index]]
+    min_distance = np.min(distances)
+    min_index = np.argmin(distances)
+    if min_distance < 0.5:  # This threshold may need to be adjusted based on your specific use case
+        return filenames[indices[min_index]]
 
     return None
