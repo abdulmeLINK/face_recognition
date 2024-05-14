@@ -1,15 +1,18 @@
-import tensorflow as tf
+import cv2
 import numpy as np
 from facenet_pytorch import InceptionResnetV1
+import torch
 
 class FaceNetModel:
     def __init__(self, pretrained_model="vggface2"):
         self.pretrained_model = pretrained_model
         self.model = None
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def load_model(self):
         self.model = InceptionResnetV1(pretrained=self.pretrained_model).eval()
-        self.model.summary()
+        self.model = self.model.to(self.device)
+        print(self.model)
 
     def preprocess_image(self, image):
         # Resize the image to the size expected by FaceNet (160x160)
@@ -23,9 +26,26 @@ class FaceNetModel:
 
         return image
 
+    import torch
+
     def compute_embedding(self, image):
         preprocessed_image = self.preprocess_image(image)
-        embedding = self.model.predict(np.expand_dims(preprocessed_image, axis=0))
+
+        # Convert the image to a PyTorch tensor
+        preprocessed_image = torch.from_numpy(preprocessed_image)
+
+        # Add a batch dimension
+        preprocessed_image = preprocessed_image.unsqueeze(0)
+
+        # Make sure the image is on the same device as the model
+        preprocessed_image = preprocessed_image.to(self.model.device)
+
+        # Compute the embedding
+        embedding = self.model(preprocessed_image)
+
+        # Convert the embedding to a numpy array
+        embedding = embedding.detach().cpu().numpy()
+
         return embedding
 
     def compare_faces(self, image, database, threshold=0.5):
