@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import pickle
 from scipy.spatial import KDTree
+from sklearn.metrics.pairwise import cosine_distances
 
 class ArcFaceModel:
     def __init__(self):
@@ -51,12 +52,24 @@ def load_embeddings_from_database(model):
 def calculate_euclidean_distance(embedding1, embedding2):
     return np.sqrt(np.sum((embedding1 - embedding2) ** 2))
 
+def calculate_cosine_distance(self, image1, image2):
+        embedding1 = self.compute_embedding(image1)
+        embedding2 = self.compute_embedding(image2)
+        embedding1 = np.reshape(embedding1, (1, -1))  # Reshape the embedding into a 2D array
+        embedding2 = np.reshape(embedding2, (1, -1))  # Reshape the embedding into a 2D array
+        distance = cosine_distances(embedding1, embedding2)
+        return distance[0][0]
+
 def compare_to_database(embedding, database_embeddings, filenames, database_tree):
     distances, indices = database_tree.query(embedding, k=len(database_embeddings))
     min_distance = np.min(distances)
     min_index = np.argmin(distances)
-    print(f"minimum distance: {min_distance} -> {distances}")
+    sorted_indices = np.argsort(distances)
+    print("Filenames sorted according to distances:")
+    for i in sorted_indices[0]:
+        print(f"{filenames[indices[0][i]]}: {distances[0][i]}")
     if min_distance < 0.68:  # This threshold may need to be adjusted based on your specific use case
-        return filenames[indices[min_index][0]]
+        return filenames[indices[0][min_index]]
 
     return None
+

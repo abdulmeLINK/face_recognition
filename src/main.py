@@ -1,7 +1,7 @@
-import os
+import argparse
 import cv2
 from facenet.model import FaceNetModel
-from service.face_comparator import load_embeddings_from_database, calculate_euclidean_distance, compare_to_database
+from service.face_comparator import load_embeddings_from_database, compare_to_database, calculate_cosine_distance
 
 # Load the FaceNet model
 model = FaceNetModel()
@@ -17,7 +17,20 @@ def compare_faces(input_photo):
     result = compare_to_database(input_embedding, database_embeddings, filenames, database_tree)
     return result
 
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description='Compare faces.')
+parser.add_argument('input_photo', type=str, help='Path to the input photo.')
+parser.add_argument('--pairwise', type=str, help='Path to the second photo for pairwise comparison.')
+args = parser.parse_args()
+
 # Example usage
-input_photo = 'db/test_faces/1.jpg'
-result = compare_faces(input_photo)
-print(result)
+if args.pairwise:
+    photo1 = cv2.imread(args.input_photo)
+    photo2 = cv2.imread(args.pairwise)
+    embedding1 = model.compute_embedding(photo1)
+    embedding2 = model.compute_embedding(photo2)
+    distance = calculate_cosine_distance(embedding1, embedding2)
+    print(f'Distance between input photo and pairwise photo: {distance}')
+else:
+    result = compare_faces(args.input_photo)
+    print(result)
