@@ -37,12 +37,15 @@ def load_embeddings_from_database(model):
                 for i, face in enumerate(faces):
                     # Extract the region of interest from the image
                     x, y, w, h = face.left(), face.top(), face.width(), face.height()
-                    roi = image[y:y+h, x:x+w]
 
-                    embedding = model.compute_embedding(roi)
-                    embedding = np.reshape(embedding, (1, -1))  # Reshape the embedding into a 2D array
-                    database_embeddings.append(embedding)
-                    filenames.append(f"{filename}_face{i}")
+                    # Check that the coordinates are within the bounds of the image
+                    if x >= 0 and y >= 0 and x + w <= image.shape[1] and y + h <= image.shape[0]:
+                        roi = image[y:y+h, x:x+w]
+
+                        embedding = model.compute_embedding(roi)
+                        embedding = np.reshape(embedding, (1, -1))  # Reshape the embedding into a 2D array
+                        database_embeddings.append(embedding)
+                        filenames.append(f"{filename}_face{i}")
 
         database_embeddings = np.concatenate(database_embeddings, axis=0)  # Concatenate the embeddings into a 2D array
         database_tree = KDTree(database_embeddings)

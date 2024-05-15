@@ -32,14 +32,17 @@ def compare_faces():
     for i, face in enumerate(faces):
         # Extract the region of interest from the image
         x, y, w, h = face.left(), face.top(), face.width(), face.height()
-        roi = image[y:y+h, x:x+w]
 
-        # Preprocess the face and compute its embedding
-        embedding = model.compute_embedding(roi)
+        # Check that the coordinates are within the bounds of the image
+        if x >= 0 and y >= 0 and x + w <= image.shape[1] and y + h <= image.shape[0]:
+            roi = image[y:y+h, x:x+w]
 
-        # Compare the embedding to the faces in the database
-        match = compare_to_database_cosine(embedding, database_embeddings, filenames)
-        matches.append({'face': i, 'match': match})
+            # Preprocess the face and compute its embedding
+            embedding = model.compute_embedding(roi)
+
+            # Compare the embedding to the faces in the database
+            match = compare_to_database_cosine(embedding, database_embeddings, filenames)
+            matches.append({'face': i, 'match': match})
 
     # Return the result as JSON
     return jsonify(matches)
