@@ -1,7 +1,7 @@
 import requests
 
 url = 'http://localhost:5000/compare'
-file_path = 'src/db/test_faces/1.jpg'
+file_path = 'src/db/test_faces/3.jpg'
 
 with open(file_path, 'rb') as f:
     files = {'photo': f}
