@@ -1,6 +1,8 @@
-numpy==1.21.2
-flask==2.0.1
+numpy
+flask
 opencv-python
 facenet_pytorch
 torch
-werkzeug
+werkzeug==0.16.1
+dlib
+jinja2

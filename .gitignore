@@ -1,0 +1,3 @@
+*.pkl
+src/*.pkl
+*.pyc
