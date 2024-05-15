@@ -4,65 +4,45 @@ import numpy as np
 import pickle
 from scipy.spatial import KDTree
 from sklearn.metrics.pairwise import cosine_distances
+import dlib
+# Initialize the face detector
+import dlib
+
+def get_face_detector():
+    # Initialize the face detector
+    detector = dlib.get_frontal_face_detector()
+    return detector
 
 
 def load_embeddings_from_database(model):
     database_path = os.path.join(os.path.dirname(__file__), '../db/faces')
     embeddings_path = os.path.join(os.path.dirname(__file__), '../db/embeddings.pkl')
     cosine_distances_path = os.path.join(os.path.dirname(__file__), '../db/cosine_distances.pkl')
-
-    if os.path.exists(embeddings_path):
-        with open(embeddings_path, 'rb') as f:
-            database_embeddings, filenames, database_tree = pickle.load(f)
-    else:
-        database_embeddings = []
-        filenames = []
-
-        for filename in os.listdir(database_path):
-            if filename.endswith('.jpg') or filename.endswith('.png'):
-                image_path = os.path.join(database_path, filename)
-                image = cv2.imread(image_path)
-                embedding = model.compute_embedding(image)
-                embedding = np.reshape(embedding, (1, -1))  # Reshape the embedding into a 2D array
-                database_embeddings.append(embedding)
-                filenames.append(filename)
-
-        database_embeddings = np.concatenate(database_embeddings, axis=0)  # Concatenate the embeddings into a 2D array
-        database_tree = KDTree(database_embeddings)
-
-        with open(embeddings_path, 'wb') as f:
-            pickle.dump((database_embeddings, filenames, database_tree), f)
-
-    if os.path.exists(cosine_distances_path):
-        with open(cosine_distances_path, 'rb') as f:
-            cosine_distances = pickle.load(f)
-    else:
-        cosine_distances = cosine_distances(database_embeddings)
-        with open(cosine_distances_path, 'wb') as f:
-            pickle.dump(cosine_distances, f)
-
-    return database_embeddings, filenames, database_tree, cosine_distances
     
-def load_embeddings_from_database(model):
-    database_path = os.path.join(os.path.dirname(__file__), '../db/faces')
-    embeddings_path = os.path.join(os.path.dirname(__file__), '../db/embeddings.pkl')
-    cosine_distances_path = os.path.join(os.path.dirname(__file__), '../db/cosine_distances.pkl')
-
     if os.path.exists(embeddings_path):
         with open(embeddings_path, 'rb') as f:
             database_embeddings, filenames, database_tree = pickle.load(f)
     else:
         database_embeddings = []
         filenames = []
-
+        detector = get_face_detector()
         for filename in os.listdir(database_path):
             if filename.endswith('.jpg') or filename.endswith('.png'):
                 image_path = os.path.join(database_path, filename)
                 image = cv2.imread(image_path)
-                embedding = model.compute_embedding(image)
-                embedding = np.reshape(embedding, (1, -1))  # Reshape the embedding into a 2D array
-                database_embeddings.append(embedding)
-                filenames.append(filename)
+                
+                # Detect faces in the image
+                faces = detector(image, 1)
+
+                for i, face in enumerate(faces):
+                    # Extract the region of interest from the image
+                    x, y, w, h = face.left(), face.top(), face.width(), face.height()
+                    roi = image[y:y+h, x:x+w]
+
+                    embedding = model.compute_embedding(roi)
+                    embedding = np.reshape(embedding, (1, -1))  # Reshape the embedding into a 2D array
+                    database_embeddings.append(embedding)
+                    filenames.append(f"{filename}_face{i}")
 
         database_embeddings = np.concatenate(database_embeddings, axis=0)  # Concatenate the embeddings into a 2D array
         database_tree = KDTree(database_embeddings)
