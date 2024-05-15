@@ -15,7 +15,7 @@ def compare_faces(input_photo, use_cosine_distance=False):
     input_face = cv2.imread(input_photo)
     input_embedding = model.compute_embedding(input_face)
     if use_cosine_distance:
-        result = compare_to_database_cosine(input_embedding, database_embeddings, filenames, cosine_distances)
+        result = compare_to_database_cosine(input_embedding, database_embeddings, filenames)
     else:
         result = compare_to_database(input_embedding, database_embeddings, filenames, database_tree)
     return result

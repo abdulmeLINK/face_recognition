@@ -25,7 +25,7 @@ def compare_faces():
     embedding = model.compute_embedding(photo)
 
     # Compare the embedding to the faces in the database
-    match = compare_to_database_cosine(embedding, database_embeddings, filenames, cosine_distances)
+    match = compare_to_database_cosine(embedding, database_embeddings, filenames)
 
     # Return the result as JSON
     return jsonify({'match': match})

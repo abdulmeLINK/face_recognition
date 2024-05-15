@@ -102,7 +102,12 @@ def compare_to_database(embedding, database_embeddings, filenames, database_tree
 
     return None
 
-def compare_to_database_cosine(embedding, distances, filenames):
+from sklearn.metrics.pairwise import cosine_similarity
+
+def compare_to_database_cosine(embedding, database_embeddings, filenames):
+    # Calculate cosine distances
+    distances = 1 - cosine_similarity(embedding.reshape(1, -1), database_embeddings)
+    
     min_distance = np.min(distances)
     min_index = np.argmin(distances)
     sorted_indices = np.argsort(distances)
