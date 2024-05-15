@@ -41,7 +41,7 @@ def compare_faces(input_photo, use_cosine_distance=False):
     return results
 
 
-def pairwise(input_photo1, input_photo2, use_cosine_distance=False):
+def pairwise(input_photo1, input_photo2):
     input_image1 = cv2.imread(input_photo1)
     input_image2 = cv2.imread(input_photo2)
 
@@ -73,11 +73,9 @@ def pairwise(input_photo1, input_photo2, use_cosine_distance=False):
                     # Compute the embedding for the face
                     input_embedding2 = model.compute_embedding(roi2)
 
-                    # Compare the embeddings
-                    if use_cosine_distance:
-                        result = cosine_distance(input_embedding1, input_embedding2)
-                    else:
-                        result = euclidean_distance(input_embedding1, input_embedding2)
+                    
+                    result = calculate_cosine_distance(input_embedding1, input_embedding2)
+                  
 
                     results.append({'face1': i, 'face2': j, 'match': result})
 
@@ -92,8 +90,8 @@ args = parser.parse_args()
 
 # Example usage
 if args.pairwise:
-    results = pairwise(args.input_photo, args.pairwise, args.cosine_db)
-    print(f'Distance between input photo and pairwise photo: {distance}')
+    results = pairwise(args.input_photo, args.pairwis)
+    print(f'Distance between input photo and pairwise photo: {results}')
 else:
     result = compare_faces(args.input_photo, args.cosine_db)
     print(result)
