@@ -1,4 +1,6 @@
-tensorflow-gpu==2.6.0
 numpy==1.21.2
 flask==2.0.1
 opencv-python
+facenet_pytorch
+torch
+werkzeug

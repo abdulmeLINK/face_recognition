@@ -5,8 +5,6 @@ from PIL import Image
 import numpy as np
 import numpy as np
 from service.face_comparator import load_embeddings_from_database,get_face_detector, compare_to_database_cosine
-import os
-import cv2
 
 app = Flask(__name__)
 
