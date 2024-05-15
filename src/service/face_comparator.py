@@ -52,9 +52,7 @@ def load_embeddings_from_database(model):
 def calculate_euclidean_distance(embedding1, embedding2):
     return np.sqrt(np.sum((embedding1 - embedding2) ** 2))
 
-def calculate_cosine_distance(self, image1, image2):
-        embedding1 = self.compute_embedding(image1)
-        embedding2 = self.compute_embedding(image2)
+def calculate_cosine_distance(embedding1, embedding2):
         embedding1 = np.reshape(embedding1, (1, -1))  # Reshape the embedding into a 2D array
         embedding2 = np.reshape(embedding2, (1, -1))  # Reshape the embedding into a 2D array
         distance = cosine_distances(embedding1, embedding2)
