@@ -72,13 +72,13 @@ def load_embeddings_from_database(model):
 
     if os.path.exists(cosine_distances_path):
         with open(cosine_distances_path, 'rb') as f:
-            cosine_distances = pickle.load(f)
+            cosine_dist = pickle.load(f)
     else:
-        cosine_distances = cosine_distances(database_embeddings)
+        cosine_dist = cosine_distances(database_embeddings)
         with open(cosine_distances_path, 'wb') as f:
-            pickle.dump(cosine_distances, f)
+            pickle.dump(cosine_dist, f)
 
-    return database_embeddings, filenames, database_tree, cosine_distances
+    return database_embeddings, filenames, database_tree, cosine_dist
 
 def calculate_euclidean_distance(embedding1, embedding2):
     return np.sqrt(np.sum((embedding1 - embedding2) ** 2))
