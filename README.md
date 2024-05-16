@@ -15,7 +15,7 @@ To use the face comparison service, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/face_recognition.git
+   git clone https://github.com/abdulmeLINK/face_recognition.git
    ```
 
 2. Install the required dependencies:
