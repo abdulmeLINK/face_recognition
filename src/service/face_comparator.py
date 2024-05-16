@@ -87,17 +87,16 @@ def compare_to_database(embedding, database_embeddings, filenames, database_tree
 
 from sklearn.metrics.pairwise import cosine_similarity
 
-def compare_to_database_cosine(embedding, database_embeddings, filenames):
+def compare_to_database_cosine(embedding, database_embeddings, filenames, n=1):
     # Calculate cosine distances
     distances = 1 - cosine_similarity(embedding.reshape(1, -1), database_embeddings)
     
-    min_distance = np.min(distances)
-    min_index = np.argmin(distances)
     sorted_indices = np.argsort(distances)
     print("Filenames sorted according to distances:")
     for i in sorted_indices[0]:
         print(f"{filenames[i]}: {distances[0][i]}")
-    if min_distance < 0.68:  # This threshold may need to be adjusted based on your specific use case
-        return filenames[min_index]
-
-    return None
+    
+    # Get the first 'n' matches
+    first_n_matches = [filenames[i] for i in sorted_indices[0][:n]]
+    
+    return first_n_matches

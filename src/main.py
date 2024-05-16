@@ -1,10 +1,10 @@
 import argparse
 import cv2
-from facenet.model import FaceNetModel
+from facenet.model import VGGface2
 from service.face_comparator import get_face_detector, load_embeddings_from_database, compare_to_database, calculate_cosine_distance, compare_to_database_cosine
 
 # Load the FaceNet model
-model = FaceNetModel()
+model = VGGface2()
 model.load_model()
 
 # Load the embeddings from the database

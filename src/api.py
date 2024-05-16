@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from facenet.model import FaceNetModel
+from models.vggface2 import VGGface2
 from werkzeug.datastructures import FileStorage
 from PIL import Image
 import numpy as np
@@ -11,7 +11,7 @@ import time
 app = Flask(__name__)
 
 # Load the FaceNet model
-model = FaceNetModel()
+model = VGGface2()
 model.load_model()
 database_embeddings, filenames, database_tree, cosine_distances = load_embeddings_from_database(model)
 
@@ -48,7 +48,7 @@ def compare_faces():
 
             # Compare the embedding to the faces in the database
             db_search_start_time = time.time()
-            match = compare_to_database_cosine(embedding, database_embeddings, filenames)
+            match = compare_to_database_cosine(embedding, database_embeddings, filenames, n=5)
             db_search_end_time = time.time()
 
             matches.append({

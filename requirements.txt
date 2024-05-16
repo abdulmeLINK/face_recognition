@@ -1,8 +1,8 @@
-numpy
-flask
-opencv-python
-facenet_pytorch
-torch
-werkzeug==0.16.1
-dlib
-jinja2
+numpy==1.21.2
+flask==3.0.3
+opencv-python==4.9.0.80
+facenet_pytorch==2.5.3
+torch==2.3.0
+werkzeug==3.0.3
+jinja2==3.1.4
+dlib==19.24.4 #Build takes time, watch out :)
